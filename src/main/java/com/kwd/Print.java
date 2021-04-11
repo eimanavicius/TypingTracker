@@ -1,5 +1,14 @@
 package com.kwd;
 
+import com.kwd.thymeleaf.TypingTrackerDialect;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
+
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,11 +16,22 @@ import static com.kwd.Constants.*;
 
 public class Print {
 
+    private static final TemplateEngine engine;
+    static Writer writer = new OutputStreamWriter(System.out);
+
+    static {
+        engine = new TemplateEngine();
+        StringTemplateResolver resolver = new StringTemplateResolver();
+        resolver.setTemplateMode(TemplateMode.TEXT);
+        engine.setTemplateResolver(resolver);
+        engine.addDialect(new TypingTrackerDialect());
+    }
+
     private Print() {
     }
 
     static void printAboveAverageAllTime() {
-        System.out.println(Constants.ANSI_GREEN + "Better than all time average!" + Constants.ANSI_RESET);
+        engine.process("[# tt:color=green]Better than all time average![/]\n", new Context(), writer);
     }
 
     static void printAboveAveragePast7Days() {
